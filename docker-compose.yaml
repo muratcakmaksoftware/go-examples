@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: mydb
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  goapp:
+    image: golang:1.24.3-alpine3.21
+    container_name: goapp
+    depends_on:
+      - mysql
+    volumes:
+      - ./:/examples
+    working_dir: /examples
+    command: sh -c "sleep 99999999999999999"
+    environment:
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_USER: user
+      DB_PASSWORD: password
+      DB_NAME: mydb
+    ports:
+      - "8080:8080"
+
+volumes:
+  mysql_data:

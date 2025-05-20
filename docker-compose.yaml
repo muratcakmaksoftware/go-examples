@@ -26,6 +26,7 @@ services:
     command: sh -c "sleep infinity"
     ports:
       - "8080:8080"
+      - "3000:3000"
     networks:
       default:
         ipv4_address: 172.20.0.20

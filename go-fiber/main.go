@@ -7,6 +7,42 @@ import (
 	"github.com/gofiber/fiber/v2/utils"
 )
 
+type User struct {
+	Name string `json:"name"`
+	Role string `json:"role"`
+}
+
+type Response struct {
+	Message string `json:"message"`
+	Data    any    `json:"data"` //interace == any
+}
+
+type ErrorResponse struct {
+	Error string `json:"error"`
+	Data  any    `json:"data"`
+}
+
+func Success(c *fiber.Ctx, message string, data any) error {
+	return JsonResponse(c, Response{
+		Message: message,
+		Data:    data,
+	}, fiber.StatusOK, message, data)
+}
+
+func Error(c *fiber.Ctx, errorCode int, message string, data any) error {
+	return JsonResponse(c, ErrorResponse{
+		Error: message,
+		Data:  data,
+	}, errorCode, message, data)
+}
+
+func JsonResponse(c *fiber.Ctx, model any, status int, message string, data any) error {
+	return c.Status(status).JSON(Response{
+		Message: message,
+		Data:    data,
+	})
+}
+
 func main() {
 
 	app := fiber.New(fiber.Config{
@@ -37,11 +73,32 @@ func main() {
 		return fiber.NewError(400, "Custom error message")
 	})
 
-	app.Get("/:murat", func(c *fiber.Ctx) error { //Parametre alimi immutable değil. "Handler içindeysek yapmamız gerekli değil."
-		return c.SendString("Isim: " + c.Params("value"))
+	app.Get("/stack", func(c *fiber.Ctx) error {
+		c.Accepts("application/json")
+		return c.JSON(c.App().Stack())
 	})
 
-	app.Get("/:foo", func(c *fiber.Ctx) error {
+	app.Get("/sample-response", func(c *fiber.Ctx) error {
+		user := User{
+			Name: "Murat",
+			Role: "admin",
+		}
+		return Success(c, "Kullanıcı getirildi", user)
+	})
+
+	app.Get("/sample-error-response", func(c *fiber.Ctx) error {
+		return Error(c, fiber.StatusBadRequest, "Kötü İstek", nil)
+	})
+
+	app.Get("/profile/:murat", func(c *fiber.Ctx) error { //Parametre alimi immutable değil. "Handler içindeysek yapmamız gerekli değil."
+		params := c.AllParams() // tüm parametreleri almak için
+		return c.JSON(fiber.Map{
+			"params":  params,
+			"message": "Merhaba, " + c.Params("murat") + "!",
+		})
+	})
+
+	app.Get("/deep-copy/:foo", func(c *fiber.Ctx) error {
 		result := utils.CopyString(c.Params("foo")) //utils de hazır immutable edecek CopyString metodu. "Handler dışına veri taşınacaksa gereklidir."
 
 		return c.SendString(result) //return nil hatasız demektir.

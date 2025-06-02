@@ -1,6 +1,8 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+)
 
 type User struct {
 	Name  string // Büyük harfle başlamak dışarıya bu veriyi açmak demektir - encoding/json
@@ -13,6 +15,9 @@ type Page struct {
 	Title string
 	URL   string
 }
+
+const const1 = "Test"
+const const2 string = "Test2"
 
 func main() {
 	//Değişkenler
@@ -50,4 +55,76 @@ func main() {
 		fmt.Println("err boş değil")
 	}
 
+	// if else de "else" in gereksiz olduğum durum. Fonksiyondan 2 tane data dönüyoruz ve error varsa direk hatalıya çekiyoruz.
+	result, err := divide(10, 2)
+	if err != nil {
+		fmt.Println("Hata:", err)
+		return
+	}
+	fmt.Println("Sonuç:", result)
+
+	//Constant
+	const const3 = 100 / 2
+	fmt.Println(const1)
+	fmt.Println(const2)
+	fmt.Println(const3)
+
+	//FOR
+	for i := 0; i < 3; i++ {
+		fmt.Println(i)
+	}
+
+	i := 0
+	for i < 3 {
+		fmt.Println(i)
+		i++
+	}
+
+	for i := range 3 {
+		fmt.Println(i)
+	}
+
+	for {
+		fmt.Println("infinity loop")
+		break
+	}
+
+	fruits := map[string]int{
+		"elma":     3,
+		"muz":      5,
+		"portakal": 2,
+	}
+
+	for key, value := range fruits {
+		fmt.Printf("%s - %d\n", key, value) //Burada %s = string %d = decimal sayı anlamında basmak için C de kullanılır
+	}
+
+	for key := range fruits {
+		if key == "elma" {
+			delete(fruits, key)
+		}
+	}
+	fmt.Println(fruits)
+
+	for _, value := range fruits { // _ = underline ile key atlayabiliriz
+		fmt.Println(value)
+	}
+
+	for pos, char := range "日本\x80語" { // \x80 is an illegal UTF-8 encoding // Burada karakterlerin unicode bilgisini görebiliyoruz "pos"
+		fmt.Printf("character %#U starts at byte position %d\n", char, pos)
+	}
+
+	a := []int{1, 2, 3, 4, 5}
+
+	for i, j := 0, len(a)-1; i < j; i, j = i+1, j-1 { //Burada tek forda iki tane sayaç kullanılmıştır
+		a[i], a[j] = a[j], a[i]
+	}
+	fmt.Println("Ters çevrilmiş:", a)
+}
+
+func divide(a, b int) (int, error) {
+	if b == 0 {
+		return 0, fmt.Errorf("0'a bölme hatası")
+	}
+	return a / b, nil
 }

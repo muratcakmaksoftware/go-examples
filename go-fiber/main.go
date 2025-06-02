@@ -9,7 +9,7 @@ import (
 
 type User struct {
 	Name string `json:"name"`
-	Role string `json:"role"`
+	Role string `json:"role"` // ,omitempty  sonuna eklenirse bu değer null ise encode edildiğinde bu veri gönderilmez.
 }
 
 type Response struct {

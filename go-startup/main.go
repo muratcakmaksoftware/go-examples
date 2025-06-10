@@ -120,6 +120,23 @@ func main() {
 		a[i], a[j] = a[j], a[i]
 	}
 	fmt.Println("Ters çevrilmiş:", a)
+
+	//ARRAYS
+	var isim [3]string
+	isim[0] = "Ali"
+	isim[1] = "Veli"
+	isim[2] = "Ayşe"
+	isim = [3]string{"Ali", "Veli", "Ayşe"}
+	fmt.Println(isim)
+
+	var sayilar = [...]int{1, 2, 3, 4, 5}
+	fmt.Println(sayilar)
+
+	matris := [2][3]int{
+		{1, 2, 3},
+		{1, 2, 3},
+	}
+	fmt.Println(matris, matris[1][2])
 }
 
 func divide(a, b int) (int, error) {

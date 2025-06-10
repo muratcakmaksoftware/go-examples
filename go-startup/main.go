@@ -137,6 +137,39 @@ func main() {
 		{1, 2, 3},
 	}
 	fmt.Println(matris, matris[1][2])
+
+	//Slice / Dinamik Array
+	slice := []int{1, 2, 3} // [] boş slice demek
+	fmt.Println(slice)
+	fmt.Println(len(slice)) //Uzunluk
+	fmt.Println(cap(slice)) //Kapasite
+	slice = append(slice, 4)
+	slice = append(slice, 5, 6)
+	fmt.Println(slice)
+
+	var sliceEmpty []string
+	fmt.Println("uninit:", sliceEmpty, sliceEmpty == nil, len(sliceEmpty) == 0)
+
+	s := make([]int, 0, 5) // type, 0 uzunlukta, 5 kapasiteli slice oluştur
+	s = append(s, 10)
+	s = append(s, 20, 30, 40, 50)
+	fmt.Println(s)      // [10 20 30]
+	fmt.Println(len(s)) // 3
+	fmt.Println(cap(s)) // 5
+
+	//Slice kopyalama
+	c := make([]int, len(s))
+	copy(c, s)
+
+	fmt.Println("cpy:", c)
+	l := s[0:5] // 0 dan başla 5 tane al diyoruz. //[10 20 30 40 50]
+	fmt.Println(l)
+
+	l = s[:3] //en baştan başla 2 kadar al - başlanan yer dahildir. //[10 20 30]
+	fmt.Println("sl2:", l)
+
+	l = s[3:] //3 başla sona kadar al - başlanan yer dahil değildir. // [40 50]
+	fmt.Println("sl3:", l)
 }
 
 func divide(a, b int) (int, error) {

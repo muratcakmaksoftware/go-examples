@@ -170,6 +170,27 @@ func main() {
 
 	l = s[3:] //3 başla sona kadar al - başlanan yer dahil değildir. // [40 50]
 	fmt.Println("sl3:", l)
+
+	//Make
+	//make(map[key-type]val-type)
+	m := make(map[string]int) // map[string]int{"foo": 1, "bar": 2}
+	m["test1"] = 1
+	m["test2"] = 2
+	fmt.Println("Map: ", m)
+
+	delete(m, "test2")
+	fmt.Println("Map: ", m)
+
+	clear(m)
+	fmt.Println("map:", m)
+
+	_, exists := m["test2"] //identifier ile degere ihtiyacin olmadigini belirtirsin eger degere ihtiyacin varsa _ yerine val gibi degisken kullanilabilir
+	if exists {
+		fmt.Println("test exists")
+	} else {
+		fmt.Println("test doesnt exists ")
+	}
+
 }
 
 func divide(a, b int) (int, error) {

@@ -191,6 +191,35 @@ func main() {
 		fmt.Println("test doesnt exists ")
 	}
 
+	//Func
+	res := plusPlus(1, 2, 3)
+	fmt.Println(res)
+
+	result1, result2 := murat() //Çoklu return dönüşü
+	fmt.Println(result1, result2)
+
+	//Variadic Functions
+	sum(1, 2) // Çoklu parametre aktarımı
+	sum(1, 2, 3)
+	nums := []int{1, 2, 3, 4}
+	sum(nums...)
+
+	//Closures
+	nextInt := intSeq() // Fonksiyonu değişkende kullanım
+	fmt.Println(nextInt())
+
+	//Recursion // Tekrarlama
+	fmt.Println(fact(7))
+
+	//Anonymous functions
+	var fib func(n int) int //Anonim Fonksiyon tanımlamak için önce declare edilmesi gerek.
+	fib = func(n int) int {
+		if n < 2 {
+			return n
+		}
+		return fib(n-1) + fib(n-2)
+	}
+	fmt.Println(fib(7))
 }
 
 func divide(a, b int) (int, error) {
@@ -198,4 +227,37 @@ func divide(a, b int) (int, error) {
 		return 0, fmt.Errorf("0'a bölme hatası")
 	}
 	return a / b, nil
+}
+
+func plusPlus(a, b, c int) int {
+	return a + b + c
+}
+
+func murat() (int, int) { //Çoklu return dönüşü
+	return 3, 7
+}
+
+func sum(nums ...int) {
+	fmt.Print(nums, " ")
+	total := 0
+
+	for _, num := range nums {
+		total += num
+	}
+	fmt.Println(total)
+}
+
+func intSeq() func() int {
+	i := 0
+	return func() int { // İç fonksiyon yazımı
+		i++
+		return i
+	}
+}
+
+func fact(n int) int {
+	if n == 0 {
+		return 1
+	}
+	return n * fact(n-1)
 }

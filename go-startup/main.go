@@ -250,6 +250,9 @@ func main() {
 	detectCircle(r2)
 	detectCircle(c2)
 
+	//ENUMS / Normalde Enum desteklemiyor ama uyduruyoruz
+	var myRole Role = Editor
+	fmt.Println("Rol:", myRole)
 }
 
 func divide(a, b int) (int, error) {
@@ -344,4 +347,25 @@ func detectCircle(g geometry) { //geometry interface
 	if c, ok := g.(circle); ok { //Circle struct mı ?
 		fmt.Println("circle with radius", c.radius)
 	}
+}
+
+type Role int
+
+const (
+	Admin  Role = iota //iota 0,1,2 gibi const girilen kadar indeksler ve Role ise buradaki değer tip int değil Role tipindedir.
+	Editor             //1
+	Viewer             //2
+)
+
+var roleNames = map[Role]string{
+	Admin:  "Yönetici",
+	Editor: "Düzenleyici",
+	Viewer: "Görüntüleyici",
+}
+
+func (r Role) String() string { //Role türünde string basımı olduğu zaman otomatik çağrılan method dur. role.String() manuel çağrı
+	if val, ok := roleNames[r]; ok {
+		return val
+	}
+	return "Bilinmeyen"
 }

@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"math"
 )
 
 type User struct {
@@ -220,6 +221,35 @@ func main() {
 		return fib(n-1) + fib(n-2)
 	}
 	fmt.Println(fib(7))
+
+	//Pointer
+	i = 1
+	zeroptr(&i)
+	fmt.Println("zeroval:", i)
+	fmt.Println("pointer:", &i)
+
+	//Struct & Methods // Burada Struct tanımlayıp struct bağlı fonksiyonlar desteklemektedir.
+	r := rect{width: 10, height: 5}
+
+	fmt.Println("area: ", r.area())
+	fmt.Println("perim:", r.perim())
+
+	rp := &r
+	fmt.Println("area: ", rp.area())
+	fmt.Println("perim:", rp.perim())
+
+	//Interfaces
+	r2 := rect2{width: 3, height: 4}
+	c2 := circle{radius: 5}
+
+	//Interface ile 2 farklı struct birleştirdik ortak metodları kullanmış olduk
+	measure(r2)
+	measure(c2)
+
+	//Burada ise if ile struct ayırma tespitini gördük.
+	detectCircle(r2)
+	detectCircle(c2)
+
 }
 
 func divide(a, b int) (int, error) {
@@ -260,4 +290,58 @@ func fact(n int) int {
 		return 1
 	}
 	return n * fact(n-1)
+}
+
+func zeroptr(iptr *int) {
+	*iptr = 0
+}
+
+type rect struct {
+	width, height int
+}
+
+func (r *rect) area() int {
+	return r.width * r.height
+}
+
+func (r rect) perim() int {
+	return 2*r.width + 2*r.height
+}
+
+type geometry interface {
+	area() float64
+	perim() float64
+}
+
+type rect2 struct {
+	width, height float64
+}
+type circle struct {
+	radius float64
+}
+
+func (r rect2) area() float64 {
+	return r.width * r.height
+}
+func (r rect2) perim() float64 {
+	return 2*r.width + 2*r.height
+}
+
+func (c circle) area() float64 {
+	return math.Pi * c.radius * c.radius
+}
+func (c circle) perim() float64 {
+	return 2 * math.Pi * c.radius
+}
+
+func measure(g geometry) {
+	fmt.Println(g)
+	fmt.Println(g.area())
+	fmt.Println(g.perim())
+}
+
+func detectCircle(g geometry) { //geometry interface
+	if c, ok := g.(circle); ok { //Circle struct mı ?
+		fmt.Println("circle with radius", c.radius)
+	}
 }

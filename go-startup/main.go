@@ -70,6 +70,28 @@ func main() {
 	fmt.Println(const2)
 	fmt.Println(const3)
 
+	//Switch
+	x := 2
+	age := 20
+	mesaj := "merhaba"
+
+	switch {
+	case x == 1:
+		fmt.Println("x: Bir")
+	case x == 2 || x == 4 || x == 6: // çoklu kontrol
+		fmt.Println("x: Çift sayılardan biri")
+		fallthrough // bir sonraki case çalışsın (zorla geç)
+
+	case age >= 18 && age < 65: // if gibi kullanım (switch true gibi)
+		fmt.Println("age: Yetişkin")
+
+	case mesaj == "merhaba":
+		fmt.Println("mesaj: Selam!")
+
+	default:
+		fmt.Println("Hiçbirine uymadı")
+	}
+
 	//FOR
 	for i := 0; i < 3; i++ {
 		fmt.Println(i)
@@ -260,9 +282,9 @@ func main() {
 	fmt.Println("Toplam:", topla) // 7
 
 	//Defer // İlgili fonksiyon işini bitirdiğinde defer edilen fonksiyon çalışır.
-	fmt.Println("Başlıyoruz")
-	defer fmt.Println("Burası en son çalışır")
-	fmt.Println("Ortadayız")
+	fmt.Println("İlk fonksiyon çalıştı")
+	defer fmt.Println("İkinci fonksiyon defer edildi en son çalışcak")
+	fmt.Println("Üçüncü fonksiyon çalıştı")
 }
 
 func divide(a, b int) (int, error) {

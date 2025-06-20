@@ -253,6 +253,16 @@ func main() {
 	//ENUMS / Normalde Enum desteklemiyor ama uyduruyoruz
 	var myRole Role = Editor
 	fmt.Println("Rol:", myRole)
+
+	//Named result parameters // Return boş gönderildi ancak içindeki değişkenler isimli şekilde fonksiyon dönüşüne yazıldı.
+	carp, topla := carpVeTopla(3, 4)
+	fmt.Println("Çarpım:", carp)  // 12
+	fmt.Println("Toplam:", topla) // 7
+
+	//Defer // İlgili fonksiyon işini bitirdiğinde defer edilen fonksiyon çalışır.
+	fmt.Println("Başlıyoruz")
+	defer fmt.Println("Burası en son çalışır")
+	fmt.Println("Ortadayız")
 }
 
 func divide(a, b int) (int, error) {
@@ -368,4 +378,10 @@ func (r Role) String() string { //Role türünde string basımı olduğu zaman o
 		return val
 	}
 	return "Bilinmeyen"
+}
+
+func carpVeTopla(a int, b int) (carpim int, toplam int) { //Named result parameters
+	carpim = a * b
+	toplam = a + b
+	return //carpim & toplam değişkenlerini göndermiş olur çünkü fonksiyon dönüşünde belirtilmiştir.
 }

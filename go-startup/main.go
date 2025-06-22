@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"math"
 
@@ -293,6 +294,24 @@ func main() {
 	fmt.Println(Max(3, 7))           // int → 7
 	fmt.Println(Max(4.2, 2.1))       // float64 → 4.2
 	fmt.Println(Max("apple", "cat")) // string → cat
+
+	//Errors Handling
+	sonuc, err := bol(10, 0) //Örnek bölme hata fırlatımı
+	if err != nil {
+		fmt.Println("Hata:", err)
+	}
+	fmt.Println("Sonuç:", sonuc)
+
+	err2 := kullaniciVerisiniOku() //Örnek hata sarmalama yapımı ve yazdırma.
+	if err2 != nil {
+		fmt.Println("En üst hata:", err2)
+
+		// Zinciri çözerek her hatayı sırayla alalım
+		for i := 1; err2 != nil; i++ {
+			fmt.Printf("Seviye %d hata: %v\n", i, err2)
+			err2 = errors.Unwrap(err2)
+		}
+	}
 }
 
 func divide(a, b int) (int, error) {
@@ -423,4 +442,34 @@ func Max[T constraints.Ordered](a, b T) T {
 		return a
 	}
 	return b
+}
+
+func bol(a, b int) (int, error) {
+	if b == 0 {
+		return 0, errors.New("bölme sıfıra karşı yapılamaz")
+	}
+	return a / b, nil
+}
+
+func sistemOku() error {
+	// En alt seviye hata
+	return errors.New("disk okuma hatası")
+}
+
+func dosyaOku() error {
+	err := sistemOku()
+	if err != nil {
+		// 2. seviye: wrap'liyoruz
+		return fmt.Errorf("dosya erişimi başarısız: %w", err)
+	}
+	return nil
+}
+
+func kullaniciVerisiniOku() error {
+	err := dosyaOku()
+	if err != nil {
+		// 3. seviye: tekrar wrap
+		return fmt.Errorf("kullanıcı verisi alınamadı: %w", err)
+	}
+	return nil
 }

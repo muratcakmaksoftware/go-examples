@@ -3,12 +3,14 @@ package main
 import (
 	"fmt"
 	"math"
+
+	"golang.org/x/exp/constraints"
 )
 
 type User struct {
 	Name  string // Büyük harfle başlamak dışarıya bu veriyi açmak demektir - encoding/json
 	age   int    // Küçük harfle başlamak sadece paket içi veri erişimi demektir
-	Pages []Page
+	Pages []Page // Struct Embedding
 }
 
 type Page struct {
@@ -285,6 +287,12 @@ func main() {
 	fmt.Println("İlk fonksiyon çalıştı")
 	defer fmt.Println("İkinci fonksiyon defer edildi en son çalışcak")
 	fmt.Println("Üçüncü fonksiyon çalıştı")
+
+	//Generics Burada birden fazla farklı tipi karşılaştırmalarını yapabildiğimiz metodu geliştirmektir.
+	//Gönderdiğimiz veri tipleri farklı ve buna göre karşılaştırmayı yapabilecek fonksiyon da yazmaktadır.
+	fmt.Println(Max(3, 7))           // int → 7
+	fmt.Println(Max(4.2, 2.1))       // float64 → 4.2
+	fmt.Println(Max("apple", "cat")) // string → cat
 }
 
 func divide(a, b int) (int, error) {
@@ -406,4 +414,13 @@ func carpVeTopla(a int, b int) (carpim int, toplam int) { //Named result paramet
 	carpim = a * b
 	toplam = a + b
 	return //carpim & toplam değişkenlerini göndermiş olur çünkü fonksiyon dönüşünde belirtilmiştir.
+}
+
+// Burada constraints.Ordered Interfaces kullanıldı detayına gidip baktığımızda. ~int gibi bir ifade göreceğiz.
+// ~ en temelde int tipi varsa anlamındadır. "Ör: type MyInt int" bir tip tanımladım "var x MyInt = 5" int değerinde temelde değişken oluşturdum ancak tip adım MyInt ancak temelde int.
+func Max[T constraints.Ordered](a, b T) T {
+	if a > b {
+		return a
+	}
+	return b
 }

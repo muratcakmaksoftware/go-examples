@@ -312,6 +312,21 @@ func main() {
 			err2 = errors.Unwrap(err2)
 		}
 	}
+
+	//Custom Error
+	err = checkAge(16)
+	if err != nil {
+		if ageErr, ok := err.(*AgeError); ok { // err.(*AgeError) mu kontrolü yapılır. ageErr hata mesajını verir, ok ise Error tipinin doğru olup olmadığı true false olarak yanıtlar.
+			fmt.Println("Özel hata yakalandı!")
+			fmt.Printf("Yaş çok küçük: %d\n", ageErr.Age)
+			fmt.Println(ageErr.Error()) //Uzun yol basım
+			fmt.Println(err)            //Kısayol basım
+		} else {
+			fmt.Println("Genel bir hata:", err)
+		}
+	} else {
+		fmt.Println("Yaş uygun, devam edebilir.")
+	}
 }
 
 func divide(a, b int) (int, error) {
@@ -470,6 +485,22 @@ func kullaniciVerisiniOku() error {
 	if err != nil {
 		// 3. seviye: tekrar wrap
 		return fmt.Errorf("kullanıcı verisi alınamadı: %w", err)
+	}
+	return nil
+}
+
+// Custom hata mesajı için örnek struct
+type AgeError struct {
+	Age int
+}
+
+func (e *AgeError) Error() string { //Hata mesajını verebilmemiz için struct ait Error Metodu
+	return fmt.Sprintf("Geçersiz yaş: %d", e.Age)
+}
+
+func checkAge(age int) error {
+	if age < 18 {
+		return &AgeError{Age: age} //Hata bilgisinin hazırlanıp, gönderilmesi
 	}
 	return nil
 }

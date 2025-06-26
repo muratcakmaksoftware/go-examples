@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"math"
+	"time"
 
 	"golang.org/x/exp/constraints"
 )
@@ -327,6 +328,15 @@ func main() {
 	} else {
 		fmt.Println("Yaş uygun, devam edebilir.")
 	}
+
+	//Goroutines //Bunlar hafif iş parçacıkları çalıştıraiblir. Ana işlem(main) biterse tümü işlemdeyse bile kapanır.
+	go f("goroutine") // Yeni bir goroutine olarak başlar
+
+	go func(msg string) { // Anonymous (anonim) goroutine örneği
+		fmt.Println(msg)
+	}("going")
+
+	time.Sleep(time.Second) //Hafif iş parçacıkların mesaj basımı için bekletme yapıyoruz.
 }
 
 func divide(a, b int) (int, error) {
@@ -503,4 +513,11 @@ func checkAge(age int) error {
 		return &AgeError{Age: age} //Hata bilgisinin hazırlanıp, gönderilmesi
 	}
 	return nil
+}
+
+func f(from string) {
+	for i := 0; i < 3; i++ {
+		fmt.Println(from, ":", i)
+		time.Sleep(100 * time.Millisecond)
+	}
 }

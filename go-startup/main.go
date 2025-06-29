@@ -448,6 +448,25 @@ func main() {
 			break
 		}
 	}
+
+	//Worker Pools //Birden fazla consumer oluşturabiliriz bu dinleyiciler iş gönderildikçe işleyecek
+	jobs := make(chan int, 100)
+	results := make(chan int, 100)
+
+	// 3 tane worker başlattık ve id verdik worker'a hangi workerda işin işlendiğini görebileceğiz.
+	for w := 1; w <= 3; w++ { //
+		go worker2(w, jobs, results) //id, dinlenecek iş channel'ı, sonuçların aktarılacağaı results channel'ı
+	}
+
+	// 5 iş gönder
+	for j := 1; j <= 5; j++ { // ilk 5 işin gönderilmesi ve workerlardan hangisi ilk yakalarsa o çalıştırılacak.
+		jobs <- j
+	}
+	close(jobs) //Channel sonlandırıldı artık içeriye veri alamaz.
+
+	for a := 1; a <= 5; a++ { // dönülen 5 sonucu bekletmek için
+		<-results
+	}
 }
 
 func divide(a, b int) (int, error) {
@@ -650,4 +669,13 @@ func ping(pings chan<- string, msg string) { // pings chan<- string (sadece send
 func pong(pings <-chan string, pongs chan<- string) { //pings <-chan string (sadece receive-only) kanal tipi. Yani sadece veri alınır açıkça belirtilir.
 	msg := <-pings //channeldaki data alanır
 	pongs <- msg   //alınan mesaj pongs channela yazılır
+}
+
+func worker2(id int, jobs <-chan int, results chan<- int) { //Sadece jobs dan gelen verileri dinlenir ve işlenen veriler results channel'a aktarılır.
+	for j := range jobs {
+		fmt.Println("worker", id, "started  job", j)
+		time.Sleep(time.Second)
+		fmt.Println("worker", id, "finished job", j)
+		results <- j * 2
+	}
 }

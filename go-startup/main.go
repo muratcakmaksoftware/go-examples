@@ -394,8 +394,10 @@ func main() {
 		select { //Birden fazla channel ile çalışırken hangisinden önce mesaj gelirse o case gelip oradaki işlemleri çalıştırmasını sağlar.
 		case msg1 := <-channel1:
 			fmt.Println("received", msg1)
-		case msg2 := <-channel2:
+		case msg2 := <-channel2: //buraya hiç girmeyecek çünkü timeout takılacak ikinci iş parçacağı 2 saniye sürmektedir.
 			fmt.Println("received", msg2)
+		case <-time.After(1 * time.Second): // Timeouts // her select kontrolünde eğer işlem 1 saniyeden uzun sürerse timeout 1 e girecek.
+			fmt.Println("timeout 1")
 		}
 	}
 }

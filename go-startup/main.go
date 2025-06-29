@@ -423,6 +423,17 @@ func main() {
 	for elem := range queue {
 		fmt.Println(elem)
 	}
+
+	//Timer
+	timer1 := time.NewTimer(2 * time.Second) //2 saniye bekleyecek timer oluşturulur ve timer'ın süresi tamamlandığında channeldan dönüş sağlar. //Tek seferliktir tekrarlanmaz bu timer.
+	<-timer1.C                               //.C = Channel 2 saniye sonra sinyal alacak channeldır bu yüzden burada channel dan dönüş bekler geldiğinde o süre geçmiştir.
+	fmt.Println("2 saniye geçti")            // işlem biter.
+
+	stop := timer1.Stop() //timer beklemesi iptal edildi. yukarıdaki timer iş parçacağında olsaydı ve daha erkenden timer kapatsaydık süreyi beklemeyecekti gibi.
+	if stop {
+		fmt.Println("Timer 1 stopped")
+	}
+
 }
 
 func divide(a, b int) (int, error) {

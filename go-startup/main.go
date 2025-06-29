@@ -337,6 +337,19 @@ func main() {
 	}("going")
 
 	time.Sleep(time.Second) //Hafif iş parçacıkların mesaj basımı için bekletme yapıyoruz.
+
+	//Channels
+	messages := make(chan string) //Chan ile channel oluşturulur veri tipi ise string aktarılacağı bellidir. Burada struct da kullanabiliriz farklı verileri göndermek istiyorsak
+
+	//İş parçacağında işlem yapılıyor ve sonuç bilgisi channel dan gönderiliyor.
+	go func() {
+		//...
+		//...
+		messages <- "ping"
+	}()
+
+	msg := <-messages //İş parçacağındaki işlem bitene kadar beklemiş olur kısacası burada channeldan mesaj gelen kadar beklemiş olacak.
+	fmt.Println(msg)
 }
 
 func divide(a, b int) (int, error) {

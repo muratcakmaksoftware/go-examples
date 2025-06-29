@@ -434,6 +434,20 @@ func main() {
 		fmt.Println("Timer 1 stopped")
 	}
 
+	//Ticker
+	ticker := time.NewTicker(1 * time.Second) //Ticker belirtilen zaman kadar sürekli tekrar çalışır ve channel bilgi yollar.
+
+	// Ticker sonsuza kadar çalışmasın diye sonlandırmak için 3 kez mesaj aldıktan sonra ticker sonlandıralım
+	count := 0
+	for t := range ticker.C { //Ticker.C ile channeldan gelen bilgileri dinliyoruz
+		fmt.Println("Zaman:", t)
+		count++
+		if count == 3 {
+			ticker.Stop()
+			fmt.Println("Ticker durduruldu.")
+			break
+		}
+	}
 }
 
 func divide(a, b int) (int, error) {

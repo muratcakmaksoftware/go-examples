@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"math"
+	"sync"
 	"time"
 
 	"golang.org/x/exp/constraints"
@@ -467,6 +468,17 @@ func main() {
 	for a := 1; a <= 5; a++ { // dönülen 5 sonucu bekletmek için
 		<-results
 	}
+
+	//WaitGroups birden fazla goroutine (concurrent) yani eşzamanlı çalıştırıp onları işlerini bitmesini kontrol eden yapıdır.
+	var wg sync.WaitGroup
+
+	for i := 1; i <= 3; i++ {
+		wg.Add(1)          // her goroutine için 1 iş eklendi sayac artımı
+		go worker3(i, &wg) //eklenen iş. wg gönderilmesinin nedeni iş parçacağın işi bitince sayaç düşümü sağlamak amaçlı
+	}
+
+	wg.Wait() // Hepsi iş parçacıklarının bitimini beklenir.
+	fmt.Println("Tüm işler tamamlandı.")
 }
 
 func divide(a, b int) (int, error) {
@@ -678,4 +690,12 @@ func worker2(id int, jobs <-chan int, results chan<- int) { //Sadece jobs dan ge
 		fmt.Println("worker", id, "finished job", j)
 		results <- j * 2
 	}
+}
+
+func worker3(id int, wg *sync.WaitGroup) {
+	defer wg.Done() // iş bitince sayaç dan veriyi düşmek içindir. Ne olursa olsun hata olsada defer yapıldığı için bu fonksiyonda işlem sonlandığında bu işlem çalışmış olacak.
+
+	fmt.Printf("Worker %d başlıyor\n", id)
+	time.Sleep(time.Second)
+	fmt.Printf("Worker %d bitti\n", id)
 }

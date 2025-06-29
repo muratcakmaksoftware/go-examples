@@ -402,6 +402,27 @@ func main() {
 			fmt.Println("no message received")
 		}
 	}
+
+	//Closing Channels
+	channel := make(chan int, 3)
+	channel <- 10
+	channel <- 20
+	channel <- 30
+	close(channel)         // channel kapama // Channel kapansa bile veriler alınabilirdir. Ancak channel kapandığında ekleme yapılamaz.
+	fmt.Println(<-channel) // 10
+	fmt.Println(<-channel) // 20
+	fmt.Println(<-channel) // 30
+	fmt.Println(<-channel) // 0 buradakı sıfır boş ve kapalı anlamındadır
+
+	//Range over Channels //Burada range ile channeldaki gönderdiğimiz dataları okuyabiliriz.
+	queue := make(chan string, 2)
+	queue <- "one"
+	queue <- "two"
+	close(queue)
+
+	for elem := range queue {
+		fmt.Println(elem)
+	}
 }
 
 func divide(a, b int) (int, error) {

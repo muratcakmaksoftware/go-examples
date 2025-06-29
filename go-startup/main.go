@@ -368,6 +368,14 @@ func main() {
 	done := make(chan bool, 1) //bool tipinde channel başlatılıyor maks kapasite 1
 	go worker(done)            //iş parçacağı başlatılıp channel bilgisiyle gönderiliyor.
 	<-done                     //iş parçacağından veri dönüşü bekler.
+
+	//Channel Directions
+	//Burada data aktarımı yaparken fonksiyonlarda producer ve consumer belirteçleri kesinlik içermektedir. Hatalı gönderim yapılamasın diyedir.
+	pings := make(chan string, 1) //Producer channel
+	pongs := make(chan string, 1) //Transfer channel
+	ping(pings, "passed message") //Mesaj ping işlenir. Burada önemli olan fonksiyondaki parametreler.
+	pong(pings, pongs)            //Pings den Pongs mesaj taşınır. Burada önemli olan fonksiyondaki parametreler.
+	fmt.Println(<-pongs)
 }
 
 func divide(a, b int) (int, error) {
@@ -559,4 +567,15 @@ func worker(done chan bool) {
 	fmt.Println("done")
 
 	done <- true
+}
+
+// Sadece channel veri aktarmak için //Procuder
+func ping(pings chan<- string, msg string) { // pings chan<- string (sadece send-only) kanal tipi. Yani sadece veri gönderilir açıkça belirtilir.
+	pings <- msg //pings channel'a msg gönderilir.
+}
+
+// Channeldaki verileri tüketmek için //Consumer
+func pong(pings <-chan string, pongs chan<- string) { //pings <-chan string (sadece receive-only) kanal tipi. Yani sadece veri alınır açıkça belirtilir.
+	msg := <-pings //channeldaki data alanır
+	pongs <- msg   //alınan mesaj pongs channela yazılır
 }

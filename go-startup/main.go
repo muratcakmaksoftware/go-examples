@@ -376,6 +376,28 @@ func main() {
 	ping(pings, "passed message") //Mesaj ping işlenir. Burada önemli olan fonksiyondaki parametreler.
 	pong(pings, pongs)            //Pings den Pongs mesaj taşınır. Burada önemli olan fonksiyondaki parametreler.
 	fmt.Println(<-pongs)
+
+	//Select // Birden fazla iş parçacağı ile çalışırken hangisi önce gönderirse yakalayıp işlem yapmamızı sağlar.
+	channel1 := make(chan string)
+	channel2 := make(chan string)
+
+	go func() { //ilk iş parçacağı mesaj gönderimi
+		time.Sleep(1 * time.Second) //1 saniye sonra
+		channel1 <- "one"
+	}()
+	go func() { //ikinci iş parçacağı mesaj gönderimi
+		time.Sleep(2 * time.Second) // 2 saniye sonra
+		channel2 <- "two"
+	}()
+
+	for i := 0; i < 2; i++ { //For döngüsünü sonsuz yapsaydık sürekli olarak bu channel kontrolünde mesaj geldimi gibi bakacaktı.
+		select { //Birden fazla channel ile çalışırken hangisinden önce mesaj gelirse o case gelip oradaki işlemleri çalıştırmasını sağlar.
+		case msg1 := <-channel1:
+			fmt.Println("received", msg1)
+		case msg2 := <-channel2:
+			fmt.Println("received", msg2)
+		}
+	}
 }
 
 func divide(a, b int) (int, error) {

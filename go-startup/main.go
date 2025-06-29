@@ -350,6 +350,19 @@ func main() {
 
 	msg := <-messages //İş parçacağındaki işlem bitene kadar beklemiş olur kısacası burada channeldan mesaj gelen kadar beklemiş olacak.
 	fmt.Println(msg)
+
+	//Channel Buffering
+	ch := make(chan string, 2) //buradaki 2 parametre kapasitesidir 2 mesaj alabilir. Ayni anda 3 mesaj gelirse 3 mesajda durur ve ilerlemez taki 1 mesaj eriyene kadar
+	ch <- "mesaj 1"
+	ch <- "mesaj 2"
+
+	go func() { //is parcacagini bloklayacak duruma getirdik 3 mesaj ekleyip.
+		ch <- "mesaj 3" //bloklanacak
+	}()
+
+	fmt.Println("1 mesaj alınıyor:", <-ch) //1 mesaj eridigi icin 3 mesaj siraya girmiş oldu ve iş parçacağı devam etti.
+	fmt.Println("2 mesaj alınıyor:", <-ch)
+	fmt.Println("3 mesaj alınıyor:", <-ch)
 }
 
 func divide(a, b int) (int, error) {

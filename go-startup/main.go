@@ -396,8 +396,10 @@ func main() {
 			fmt.Println("received", msg1)
 		case msg2 := <-channel2: //buraya hiç girmeyecek çünkü timeout takılacak ikinci iş parçacağı 2 saniye sürmektedir.
 			fmt.Println("received", msg2)
-		case <-time.After(1 * time.Second): // Timeouts // her select kontrolünde eğer işlem 1 saniyeden uzun sürerse timeout 1 e girecek.
+		case <-time.After(1 * time.Second): // Timeouts // her select kontrolünde eğer işlem 1 saniyeden uzun sürerse bu case'e girecek.
 			fmt.Println("timeout 1")
+		default: // Non-Blocking Channel Operations // Burada channelda herhangi bir mesaj yok ise default a girecektir. Böylece mesaj gelmesi beklemeden bu case işlenecektir. Bloklama olmayacaktır.
+			fmt.Println("no message received")
 		}
 	}
 }

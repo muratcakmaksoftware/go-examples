@@ -363,6 +363,11 @@ func main() {
 	fmt.Println("1 mesaj alınıyor:", <-ch) //1 mesaj eridigi icin 3 mesaj siraya girmiş oldu ve iş parçacağı devam etti.
 	fmt.Println("2 mesaj alınıyor:", <-ch)
 	fmt.Println("3 mesaj alınıyor:", <-ch)
+
+	//Channel Synchronization -> Channel ile aynı fark olarak sadece sinyal olarak true/false dönülmesi.
+	done := make(chan bool, 1) //bool tipinde channel başlatılıyor maks kapasite 1
+	go worker(done)            //iş parçacağı başlatılıp channel bilgisiyle gönderiliyor.
+	<-done                     //iş parçacağından veri dönüşü bekler.
 }
 
 func divide(a, b int) (int, error) {
@@ -546,4 +551,12 @@ func f(from string) {
 		fmt.Println(from, ":", i)
 		time.Sleep(100 * time.Millisecond)
 	}
+}
+
+func worker(done chan bool) {
+	fmt.Print("working...")
+	time.Sleep(time.Second)
+	fmt.Println("done")
+
+	done <- true
 }

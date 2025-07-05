@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"math"
 	"sync"
+	"sync/atomic"
 	"time"
 
 	"golang.org/x/exp/constraints"
@@ -491,6 +492,26 @@ func main() {
 		<-limiter // channelden 500 milisaniye deki veriyi bekler ve devam eder.
 		fmt.Println("İşleniyor:", req, "Zaman:", time.Now().Format("15:04:05.000"))
 	}
+
+	//Atomic Counters -- çoklu goroutine ile çalışırken güvenli şekilde sayaç artımı yapabiliriz.
+	var counter uint64     // benzer sayaç örneği
+	var wg2 sync.WaitGroup // Bekleyici grup
+	var ops atomic.Uint64  // Başka bir sayaç örneği
+
+	for i := 0; i < 50; i++ {
+		wg2.Add(1)  //waitgroup sayacı
+		go func() { //iş parçacağı
+			for j := 0; j < 1000; j++ { // 1000 kez atomik artır
+				atomic.AddUint64(&counter, 1) //counter++ yerine güvenli bir şekilde artırır. Eğer direk counter++ kullansaydık aynı anda yazım işlemlerinde çakışma olur ve yanlış bir artım sonucu elde ederdik.
+				ops.Add(1)                    //Atomic Güvenli Artım
+			}
+			wg2.Done() //waitgroup dan sayac düşümü
+		}()
+	}
+
+	wg2.Wait()                            //tüm işlemin bitmesini bekler.
+	fmt.Println("Toplam Sayım:", counter) // 50 iş parçacağında her birinde 1000 artımı doğru orantıda sayacı arttırır. 50000 olur.
+	fmt.Println("ops:", ops.Load())       // artımdan gelen datayı güvenli şekilde yazdırılması
 
 }
 

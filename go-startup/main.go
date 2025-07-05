@@ -479,6 +479,19 @@ func main() {
 
 	wg.Wait() // Hepsi iş parçacıklarının bitimini beklenir.
 	fmt.Println("Tüm işler tamamlandı.")
+
+	//Tick - Rate Limiting Örneği
+	// Her 500 milisaniyede bir zaman sinyali gelir
+	limiter := time.Tick(500 * time.Millisecond) //her 500 mili saniyede channelden veri gönderir
+
+	//Rate Limiting örnek
+	requests := []string{"İstek 1", "İstek 2", "İstek 3", "İstek 4", "İstek 5"}
+
+	for _, req := range requests {
+		<-limiter // channelden 500 milisaniye deki veriyi bekler ve devam eder.
+		fmt.Println("İşleniyor:", req, "Zaman:", time.Now().Format("15:04:05.000"))
+	}
+
 }
 
 func divide(a, b int) (int, error) {
